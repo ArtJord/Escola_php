@@ -2,7 +2,7 @@
     "name": "clara/escola_php",
     "autoload": {
         "psr-4": {
-            "Clara\\EscolaPhp\\": "src/"
+            "escola_php\\": "escola_php"
         }
     },
     "authors": [
