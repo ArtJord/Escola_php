@@ -1,20 +1,10 @@
 <?php
 
-$endereco = "localhost";
-$banco = "Escola";
-$usuario = "postgres";
-$senha = "123";
+define('HOST', '127.0.0.1');
+define('USUARIO', 'root');
+define('SENHA', '1234');
+define('DB', 'escola');
 
-try {
-
-    $pdo = new PDO("pgsql:host=$endereco;port=5432;dbname=$banco", $usuario, $senha, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-
-    echo "Conectado com sucesso!!";
-
-} catch (PDOException $e) {
-    echo "Falha ao conectar ao banco de dados. <br>";
-    die($e->getMessage());
-    
-}
+$conexao = mysqli_connect(HOST, USUARIO, SENHA, DB) or die('Não foi possivel conectar');
 
 ?>
