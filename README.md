@@ -22,4 +22,4 @@ Liguagens
 - Front-and
     - (a decidir)
 - Banco de dados
-    - PostgreSQL
+    - MySql
