@@ -9,6 +9,7 @@
   <body>
     <?php 
         include('navbar.php');
+        
     ?>
     <div class="container mt-5">
         <div class="row">
@@ -20,7 +21,7 @@
                       </h4>
                     </div>
                     <div class="card-body">
-                      <d action="acoes.php" method="POST">
+                      <form action="acoes.php" method="POST">
                         <div class="mb-3">
                           <label>Nome</label>
                           <input type="text" name="nome" class="form-control">
