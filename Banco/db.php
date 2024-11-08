@@ -1,26 +1,35 @@
 <?php
 
-define('HOST', '127.0.0.1');
-define('USUARIO', 'root');
-define('SENHA', '1234');
-define('DB', 'escola');
+ class Database{
 
-$conexao = mysqli_connect(HOST, USUARIO, SENHA, DB) or die('Não foi possivel conectar');
+   private $host = 'localhost:3306';
+    private $db_name = 'escola';
+    private $user = 'root';
+    private $pass = '1234';
+
+    public $conn;
 
 
-$sql = "SELECT * FROM alunos";
-$result = $conexao->query($sql);
+    public function getConnection(){
+        $this->conn = null;
 
-if ($result->num_rows > 0) {
-  
-  while($row = $result->fetch_assoc()) {
-    echo "id: " . $row["id"]. " - Nome: " . $row["nome"]. "<br>";
-  }
-} else {
-  echo "0 resultados";
+        try {
+
+            $this->conn = new PDO("mysql:host=". $this->host . ";dbname=". $this->db_name, $this->user , $this->pass);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            echo "Erro: " . $e->getMessage();
+        
+        }
+
+        return $this->conn;
+
+    }
+
+
+
+    
 }
-
-$conexao->close();
 
 
 ?>
