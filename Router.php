@@ -4,6 +4,8 @@ class Router
 {
     private $routes = [];
 
+  
+
     public function add($method, $path, $callback)
     {
         $path = preg_replace('/\{(\w+)\}/', '(\d+)', $path);

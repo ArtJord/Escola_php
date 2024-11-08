@@ -5,8 +5,17 @@ require_once '../Router.php';
 
 header("Content-type: application/json; charset=UTF-8");
 
-$router = new Router();
+
+
+
+
+$db = new Database();
+$pdo = $db->getConnection();
+
 $controller = new UserController($pdo);
+
+
+
 
 $router->add('GET', '/aluno', [$controller, 'list']);
 $router->add('GET', '/aluno/{id}', [$controller, 'getById']);
