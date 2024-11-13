@@ -16,7 +16,7 @@ POST - Login do Professor
 
 Cria um login com nome, email e senha
 
-URL: http://localhost:8000/createAluno
+URL: http://localhost:8000/login
 
 "nome":"Professor João"
 
@@ -29,7 +29,7 @@ GET - Busca aluno por id
 Retorna as informações do aluno
 
 
-http://localhost:8000/
+http://localhost:8000/alunos
 
 "id": 1
 
@@ -37,6 +37,8 @@ http://localhost:8000/
 DELETE - Deletar aluno
 
 Deleta o aluno pelo id
+
+http://localhost:8000/aluno
 
 "id": 1
 

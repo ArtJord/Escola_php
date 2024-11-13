@@ -4,8 +4,6 @@ class Router
 {
     private $routes = [];
 
-  
-
     public function add($method, $path, $callback)
     {
         $path = preg_replace('/\{(\w+)\}/', '(\d+)', $path);
@@ -15,7 +13,7 @@ class Router
     public function dispatch($requestedPath)
     {
         $requestedMethod = $_SERVER["REQUEST_METHOD"];
-
+    
         foreach ($this->routes as $route) {
             if ($route['method'] === $requestedMethod && preg_match($route['path'], $requestedPath, $matches)) {
                 array_shift($matches);
@@ -24,4 +22,5 @@ class Router
         }
         echo "404 - Página não encontrada";
     }
+    
 }

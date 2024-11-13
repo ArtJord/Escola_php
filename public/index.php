@@ -1,30 +1,37 @@
 <?php
-require_once '../banco/db.php';
-require_once '../controller/alunoController.php';
-require_once '../Router.php';
+require_once __DIR__ . '/../src/config/db.php'; 
+require_once __DIR__ . '/../src/controllers/ProfessorController.php';
+require_once __DIR__ . '/../src/controllers/AlunoController.php'; 
+require_once __DIR__ . '/../src/Router.php';
 
 header("Content-type: application/json; charset=UTF-8");
 
+$router = new Router();
+$professorController = new ProfessorController($pdo);
+$alunoController = new AlunoController($pdo);
 
+$router->add("POST", '/registrar', [$professorController, 'create']);
+$router->add("POST", '/login', [$professorController, 'login']);
+$router->add("PUT", '/atualizar', [$professorController, 'update']);   
+$router->add("DELETE", '/deletar', [$professorController, 'delete']); 
+$router->add("POST", '/usuario', [$professorController, 'findById']);
+$router->add('POST', '/existente', [$professorController,'usuarioJaExiste']);
 
-
-
-$db = new Database();
-$pdo = $db->getConnection();
-
-$controller = new UserController($pdo);
-
-
-
-
-$router->add('GET', '/aluno', [$controller, 'list']);
-$router->add('GET', '/aluno/{id}', [$controller, 'getById']);
-$router->add('POST', '/aluno', [$controller, 'create']);
-$router->add('DELETE', '/aluno/{id}', [$controller, 'delete']);
-$router->add('PUT', '/aluno/{id}', [$controller, 'update']);
+$router->add("POST", '/aluno/registrar', [$alunoController, 'create']);
+$router->add("PUT", '/aluno/atualizar', [$alunoController, 'update']);
+$router->add("DELETE", '/aluno/deletar', [$alunoController, 'delete']);
+$router->add("POST", '/aluno', [$alunoController, 'getAllByUserId']);
 
 $requestedPath = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-$pathItems = explode("/", $requestedPath);
-$requestedPath = "/" . $pathItems[3] . ($pathItems[4] ? "/" . $pathItems[4] : "");
+$pathItems = explode("/", trim($requestedPath, "/"));
+
+if (count($pathItems) >= 1) {
+    $requestedPath = "/" . $pathItems[0];
+    if (count($pathItems) > 1) {
+        $requestedPath .= "/" . $pathItems[1]; 
+    }
+} else {
+    $requestedPath = "/"; 
+}
 
 $router->dispatch($requestedPath);
