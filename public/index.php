@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../src/config/db.php'; 
 require_once __DIR__ . '/../src/controllers/ProfessorController.php';
-require_once __DIR__ . '/../src/controllers/AlunoController.php'; 
+require_once __DIR__ . '/../src/controllers/AlunoController.php';
 require_once __DIR__ . '/../src/Router.php';
 
 header("Content-type: application/json; charset=UTF-8");
@@ -17,8 +17,13 @@ $router->add("DELETE", '/deletar', [$professorController, 'delete']);
 $router->add("POST", '/usuario', [$professorController, 'findById']);
 $router->add('POST', '/existente', [$professorController,'usuarioJaExiste']);
 
-$router->add("POST", '/aluno/registrar', [$alunoController, 'create']);
+
+
+$router->add("PUT", '/aluno/notas', [$alunoController, 'updateNotas']);
+
+$router->add("POST", '/registro', [$alunoController, 'create']);
 $router->add("PUT", '/aluno/atualizar', [$alunoController, 'update']);
+
 $router->add("DELETE", '/aluno/deletar', [$alunoController, 'delete']);
 $router->add("POST", '/aluno', [$alunoController, 'getAllByUserId']);
 

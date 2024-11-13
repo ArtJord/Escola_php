@@ -9,7 +9,7 @@ class Aluno{
         $this->conn = $db;
     }
 
-    public function create($nome, $matricula, $data_nasc, $professor_id ) {
+    public function create($nome, $matricula, $data_nasc, $professor_id) {
         $query = "INSERT INTO aluno (nome, matricula, data_nasc, professor_id) 
                   VALUES (:nome, :matricula, :data_nasc, :professor_id)";
         $stmt = $this->conn->prepare($query);
@@ -18,6 +18,8 @@ class Aluno{
         $stmt->bindParam(':matricula', $matricula);
         $stmt->bindParam(':data_nasc', $data_nasc);
         $stmt->bindParam(':professor_id', $professor_id);
+       
+        
     
         return $stmt->execute();
     }
@@ -57,6 +59,19 @@ class Aluno{
         $stmt->execute();
     
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateNotas($id, $primeira_nota, $segunda_nota) {
+        $query = "UPDATE aluno
+                  SET primeira_nota = :nome, segunda_nota = :segunda_nota
+                  WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+    
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':primeira_nota', $primeira_nota);
+        $stmt->bindParam(':segunda_nota', $segunda_nota);
+        
+        return $stmt->execute();
     }
 
 

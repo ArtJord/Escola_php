@@ -15,9 +15,10 @@ class AlunoController
     public function create()
     {
         $data = json_decode(file_get_contents("php://input"));
-        if (isset($data->titulo) && isset($data->autor) && isset($data->usuario_id)) {
+        
+        if (isset($data->nome) && isset($data->matricula) && isset($data->professor_id)) {
             try {
-                $result = $this->aluno->create($data->nome, $data->matricula, $data->data_nasc, $data->professor_id ?? null);
+                $resultado = $this->aluno->create($data->nome, $data->matricula, $data->data_nasc, $data->professor_id);
                 http_response_code(200);
                 echo json_encode(["message" => "Aluno cadastrado com sucesso."]);
             } catch (\Throwable $th) {
@@ -30,8 +31,6 @@ class AlunoController
         }
     }
 
-
-    //mudar dados do aluno
     public function update()
     {
         $data = json_decode(file_get_contents("php://input"));
@@ -83,10 +82,10 @@ class AlunoController
         $data = json_decode(file_get_contents("php://input"));
         if (isset($data->professor_id)) {
             try {
-                $books = $this->aluno->getAllByUserId($data->professor_id);
-                if ($books) {
+                $result = $this->aluno->getAllByUserId($data->professor_id);
+                if ($result) {
                     http_response_code(200);
-                    echo json_encode($books);
+                    echo json_encode($result);
                 } else {
                     http_response_code(404);
                     echo json_encode(["message" => "Nenhum aluno encontrado para este professor."]);
@@ -98,6 +97,29 @@ class AlunoController
         } else {
             http_response_code(400);
             echo json_encode(["message" => "Dados incompletos."]);
+        }
+    }
+
+    public function updateNotas()
+    {
+        $data = json_decode(file_get_contents("php://input"));
+        if (isset($data->id) && isset($data->primeira_nota) && isset($data->segunda_nota)) {
+            try {
+                $result = $this->aluno->updateNotas($data->id, $data->primeira_nota, $data->segunda_nota ?? null);
+                if ($result) {
+                    http_response_code(200);
+                    echo json_encode(["message" => "Notas atualizadas com sucesso."]);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(["message" => "Erro ao atualizar notas."]);
+                }
+            } catch (\Throwable $th) {
+                http_response_code(500);
+                echo json_encode(["message" => "Erro ao atualizar o notas."]);
+            }
+        } else {
+            http_response_code(400);
+            echo json_encode(["message" => "Preencha todos os campos."]);
         }
     }
 }

@@ -10,10 +10,9 @@ CREATE TABLE aluno (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
     matricula VARCHAR(100) NOT NULL,
-    data_nasc INTEGER NOT NULL,
-    professor_id INTEGER NOT NULL
+    data_nasc DATE NOT NULL,
+    professor_id INTEGER NOT NULL,
+    primeira_nota DECIMAL(3,1),  
+    segunda_nota DECIMAL(3,1),
+    nota_final DECIMAL(3,1)
 );
-
-
-
-/*TESTE DE CRIAÇÃO
