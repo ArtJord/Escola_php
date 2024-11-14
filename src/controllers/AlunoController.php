@@ -16,7 +16,7 @@ class AlunoController
     {
         $data = json_decode(file_get_contents("php://input"));
         
-        if (isset($data->nome) && isset($data->matricula) && isset($data->professor_id)) {
+        if (isset($data->nome) && isset($data->matricula) && isset($data->data_nasc) && isset($data->professor_id)) {
             try {
                 $resultado = $this->aluno->create($data->nome, $data->matricula, $data->data_nasc, $data->professor_id);
                 http_response_code(200);
@@ -103,9 +103,9 @@ class AlunoController
     public function updateNotas()
     {
         $data = json_decode(file_get_contents("php://input"));
-        if (isset($data->id) && isset($data->primeira_nota) && isset($data->segunda_nota)) {
+        if (isset($data->id) &&isset($data->matricula)&& isset($data->primeira_nota) && isset($data->segunda_nota)) {
             try {
-                $result = $this->aluno->updateNotas($data->id, $data->primeira_nota, $data->segunda_nota ?? null);
+                $result = $this->aluno->updateNotas($data->id, $data->matricula, $data->primeira_nota ?? null, $data->segunda_nota ?? null);
                 if ($result) {
                     http_response_code(200);
                     echo json_encode(["message" => "Notas atualizadas com sucesso."]);

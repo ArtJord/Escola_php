@@ -52,7 +52,7 @@ class Aluno{
     
 
     public function getAllByUserId($userId) {
-        $query = "SELECT * FROM livro WHERE professor_id = :professor_id";
+        $query = "SELECT * FROM aluno WHERE professor_id = :professor_id";
         $stmt = $this->conn->prepare($query);
     
         $stmt->bindParam(':professor_id', $userId);
@@ -61,13 +61,14 @@ class Aluno{
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function updateNotas($id, $primeira_nota, $segunda_nota) {
+    public function updateNotas($id, $matricula, $primeira_nota, $segunda_nota) {
         $query = "UPDATE aluno
-                  SET primeira_nota = :nome, segunda_nota = :segunda_nota
+                  SET matricula = :matricula, primeira_nota = :primeira_nota, segunda_nota = :segunda_nota
                   WHERE id = :id";
         $stmt = $this->conn->prepare($query);
     
         $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':matricula', $matricula);
         $stmt->bindParam(':primeira_nota', $primeira_nota);
         $stmt->bindParam(':segunda_nota', $segunda_nota);
         

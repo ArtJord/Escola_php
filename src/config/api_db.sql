@@ -14,5 +14,5 @@ CREATE TABLE aluno (
     professor_id INTEGER NOT NULL,
     primeira_nota DECIMAL(3,1),  
     segunda_nota DECIMAL(3,1),
-    nota_final DECIMAL(3,1)
+    
 );
