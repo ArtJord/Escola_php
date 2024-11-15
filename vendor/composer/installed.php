@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'clara/escola_php',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '05c6005cbf8474c8137e7a8625c8483bcfc7c434',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'clara/escola_php' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '05c6005cbf8474c8137e7a8625c8483bcfc7c434',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

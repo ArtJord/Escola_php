@@ -15,15 +15,16 @@ class Professor
     public function create($nome, $senha)
     {
 
-        $checkSql = "SELECT COUNT(*) FROM professor WHERE nome = :nome";
-        $checkStmt = $this->conn->prepare($checkSql);
-        $checkStmt->bindParam(':nome', $nome);
-        $checkStmt->execute();
+         print_r($nome);
+         $checkSql = "SELECT COUNT(*) FROM professor WHERE nome = :nome";
+         $checkStmt = $this->conn->prepare($checkSql);
+         $checkStmt->bindParam(':nome', $nome);
+         $checkStmt->execute();
 
 
-        if ($checkStmt->fetchColumn() > 0) {
-            return false;
-        }
+         if ($checkStmt->fetchColumn() > 0) {
+             return false;
+         }
 
         $hashedPassword = password_hash($senha, PASSWORD_DEFAULT);
 

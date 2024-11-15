@@ -1,5 +1,10 @@
 <?php
 
+    header("Access-Control-Allow-Origin: http://127.0.0.1:5500");
+    
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
 class Router
 {
     private $routes = [];
@@ -16,7 +21,7 @@ class Router
     
         foreach ($this->routes as $route) {
             if ($route['method'] === $requestedMethod && preg_match($route['path'], $requestedPath, $matches)) {
-                array_shift($matches);
+                // array_shift($matches);
                 return call_user_func($route['callback'], $matches[0]);
             }
         }
