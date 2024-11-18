@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Alunos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="../js/componentsProf.js"></script>
   </head>
   <body>
  
@@ -17,6 +18,14 @@
                         <a href="TelaCadastro.html" class="btn btn-primary float-end">Adicionar Aluno</a>
                         </h4>
                     </div>
+
+                    <div id="professor-container">
+                        <p>ID: <span id="id_professor"></span></p>
+                        <p>Nome: <span id="nome_professor"></span></p>
+                        
+                      </div>
+                    
+                  <!---->   <div class="container">
                     <div class="card-body">
                         <table class="table table-bordered table-striped">
                             <thead>
@@ -24,14 +33,14 @@
                                     <th>ID</th>
                                     <th>Nome</th>
                                     <th>Idade</th>
+                                    <th>Matricula</th>
                                     <th>Nota 1</th>
                                     <th>Nota 2</th>
                                     <th>Media final</th>
-                                    <th>Ações</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
+                            <tbody id="alunos-table">
+                                <!-- <tr>
                                     <td>1</td>
                                     <td>Teste</td>
                                     <td>20</td>
@@ -46,10 +55,11 @@
                                         </form>
                                     </td>
                                 </tr>
-                            </tbody>
+                            --> </tbody>
 
                         </table>
 
+                     </div>
                     </div>
                 </div>
             </div>

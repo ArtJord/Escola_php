@@ -1,18 +1,18 @@
-
-/*
 var body = document.querySelector("body");
 
-const form = document.getElementById('Login');
+const form = document.getElementById('formAluno');
 
-var btn_user = document.querySelector("#btn_login");
+var btn_user = document.querySelector("#logAluno");
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
 
+    let id = sessionStorage.getItem("id");
+
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-
-    fetch('http://localhost:8000/login', {
+    
+    fetch('http://localhost:8000/registro', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -21,7 +21,7 @@ form.addEventListener('submit', (event) => {
     })
     .then(response => {
         if (response.ok) {
-            alert('Professor logado com sucesso!');
+            alert('Sucesso!');
         } else {
             response.json().then(data => {
                 alert(data.message);
@@ -30,13 +30,14 @@ form.addEventListener('submit', (event) => {
     })
     .catch(error => {
         console.error('Erro:', error);
-        alert('Ocorreu ao logar.');
+        alert('erro');
     });
-});
-
-const botao = document.getElementById('btn_login');
+    const botao = document.getElementById('save');
 
 botao.addEventListener('click', function() {
- window.location.href = 'http://127.0.0.1:5500/Front-and/views/TelaInicio.html';
+    
+  window.location.href = 'http://127.0.0.1:5500/Front-and/views/TelaInicio.html';
 });
-*/
+});
+
+

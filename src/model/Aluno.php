@@ -9,7 +9,7 @@ class Aluno{
         $this->conn = $db;
     }
 
-    public function create($nome, $matricula, $data_nasc, $professor_id) {
+    public function create($nome, $matricula, $data_nasc, $professor_id = null) {
         $query = "INSERT INTO aluno (nome, matricula, data_nasc, professor_id) 
                   VALUES (:nome, :matricula, :data_nasc, :professor_id)";
         $stmt = $this->conn->prepare($query);

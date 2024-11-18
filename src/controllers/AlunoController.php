@@ -16,9 +16,9 @@ class AlunoController
     {
         $data = json_decode(file_get_contents("php://input"));
         
-        if (isset($data->nome) && isset($data->matricula) && isset($data->data_nasc) && isset($data->professor_id)) {
+        if (isset($data->nome) && isset($data->matricula) && isset($data->data_nasc)) {
             try {
-                $resultado = $this->aluno->create($data->nome, $data->matricula, $data->data_nasc, $data->professor_id);
+                $resultado = $this->aluno->create($data->nome, $data->matricula, $data->data_nasc, $data->professor_id ?? null);
                 http_response_code(200);
                 echo json_encode(["message" => "Aluno cadastrado com sucesso."]);
             } catch (\Throwable $th) {

@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 
 require_once __DIR__ . '/../model/Professor.php';
@@ -41,9 +42,13 @@ class ProfessorController
         if (isset($data->nome) && isset($data->senha)) {
             try {
                 $userId = $this->professor->login($data->nome, $data->senha);
+                
                 if ($userId !== false) {
+                    $_SESSION['professor_id'] = $userId;
+
                     http_response_code(200);
                     echo json_encode(["user_id" => $userId]);
+                    
                 } else {
                     http_response_code(401);
                     echo json_encode(["message" => "Nome de usuário ou senha incorretos."]);
