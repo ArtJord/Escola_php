@@ -60,9 +60,6 @@ botao.addEventListener('click', function() {
 });
 });
 
-
-
-
 //Tela de login
 
 const loginForm = document.getElementById('id_login');
@@ -97,7 +94,7 @@ loginForm.addEventListener('submit', (event) => {
 
       
       sessionStorage.setItem("id", data.user_id);
-      //let id = sessionStorage.getItem("id");
+     
 
 
       window.location.href = 'http://127.0.0.1:5500/Front-and/views/TelaInicio.html'; 
@@ -111,18 +108,3 @@ loginForm.addEventListener('submit', (event) => {
     alert('Ocorreu um erro durante o login. Tente novamente mais tarde.');
   });
 });
-
-
-
-
-
-
-/*const botao = document.getElementById('save');
-
-botao.addEventListener('click', function() {
-    
-  window.location.href = 'http://127.0.0.1:5500/Front-and/views/TelaInicio.html';
-});
-*/
-
-

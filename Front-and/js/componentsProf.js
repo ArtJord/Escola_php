@@ -2,10 +2,11 @@
 
 async function fetchAlunos() {
 
-    //const response = await fetch('http://localhost:8000/aluno');
-    //const professorId = await response.json();
-    const professorId = 45; 
+    
+    const professorId = sessionStorage.getItem("id");
     const apiUrl = 'http://localhost:8000/aluno'; 
+
+  
 
     try {
         const response = await fetch(apiUrl, {
@@ -18,11 +19,11 @@ async function fetchAlunos() {
 
         const data = await response.json();
 
-        // Limpa a tabela antes de adicionar novos dados
+       
         const tabelaBody = document.getElementById('alunos-table');
         tabelaBody.innerHTML = '';
 
-        // Cria as linhas da tabela com os dados dos alunos
+        
         data.forEach(aluno => {
             const novaLinha = document.createElement('tr');
             novaLinha.innerHTML = `
@@ -49,51 +50,136 @@ async function fetchAlunos() {
     }
 }
 
-// Chamar a função ao carregar a página
-fetchAlunos();
 
 
+function preencherTela() {
+    preencherProfessor();
+    fetchAlunos();
+}
 
+preencherTela();
 
+async function fetchProfessor() {
 
+    const idProfessor = sessionStorage.getItem("id");  
+    const apiUrl = "http://localhost:8000/usuario";  
 
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: idProfessor })  
+        });
 
-
-async function buscarEExibirProfessor() {
-    const userId = localStorage.getItem('userId');
-
-    if (userId) {
-        const apiUrl = `http://localhost:8000/usuario/${userId}`;
-
-        try {
-            // Exibir mensagem de carregamento (opcional)
-            document.getElementById('nome_professor').textContent = 'Carregando...';
-
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-
-            if (data) {
-                const idProfessorElement = document.getElementById('id_professor');
-                const nomeProfessorElement = document.getElementById('nome_professor');
-                
-
-                if (nomeProfessorElement && idProfessorElement) {
-                    idProfessorElement.textContent = data.id;
-                    nomeProfessorElement.textContent = data.nome;
-                } else {
-                    console.error('Elementos HTML não encontrados.');
-                }
-            } else {
-                alert('Professor não encontrado.');
-            }
-        } catch (error) {
-            console.error('Erro ao buscar dados do professor:', error);
-            alert('Ocorreu um erro ao buscar os dados do professor. Por favor, tente novamente.');
-        }
-    } else {
-        alert('Usuário não logado.');
+        const data = await response.json();  
+        return data;  
+    } catch (error) {
+        console.error("Erro ao buscar professor:", error);
+        return null;  
     }
 }
+
+async function preencherProfessor() {
+    const data = await fetchProfessor();  
+
+    if (data) {
+        
+        document.getElementById("nome_professor").textContent = data.nome;
+    } else {
+        
+        document.getElementById("nome_professor").textContent = "Erro ao carregar o nome";
+    }
+}
+
+    var btnSalvarSenha = document.getElementById("salvarSenhaNova");
+
+     const modalElement = document.getElementById('exampleModalCenter');
+     const modal = new bootstrap.Modal(modalElement);
+
+    btnSalvarSenha.addEventListener('click', async function() {
+    
+    const professor = await fetchProfessor();
+    const nomeProfessor = professor.nome;
+    const idProfessor = professor.id;
+    var senhaAntiga = document.getElementById("senhaAntiga").value;
+    var senhaNova = document.getElementById("senhaNova").value;
+
+    console.log(nomeProfessor);
+    console.log(senhaAntiga);
+    console.log(senhaNova);
+
+    if ((senhaNova === "" || senhaNova.length < 3) && (senhaAntiga === "" || senhaAntiga.length < 3)) {
+        
+        document.getElementById("erroSenha").textContent = "Preencha os campos corretamente";
+    } else {   
+
+    
+    fetch('http://localhost:8000/login', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nome: nomeProfessor, senha: senhaAntiga })
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Falha na autenticação');
+        }
+        return response.json();
+      })
+      .then(data => {
+        
+        if (data.user_id) {
+           
+            fetch('http://localhost:8000/atualizar', { 
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: idProfessor, nome: nomeProfessor, senha: senhaNova })
+              })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error('Falha ao atualizar a senha');
+                }
+                return response.json();  
+              })
+              .then(updateData => {
+                
+                console.log('Senha atualizada com sucesso', updateData);
+                document.getElementById("erroSenha").textContent = "Senha atualizada com sucesso!";
+
+                
+                modal.hide();
+              })
+              .catch(error => {
+                console.error('Erro ao atualizar a senha:', error);
+                document.getElementById("erroSenha").textContent = "Erro ao atualizar a senha.";
+              });
+
+        } else {
+          
+          document.getElementById("erroSenha").textContent = "Senha atual incorreta";
+        }
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+        document.getElementById("erroSenha").textContent = "Senha atual incorreta";
+      });
+    }
+
+});
+
+
+   
+
+   
+    
+
+  
+
 
 
 
