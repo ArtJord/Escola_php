@@ -31,12 +31,19 @@ class AlunoController
         }
     }
 
-    public function update()
-    {
+    public function update() {
         $data = json_decode(file_get_contents("php://input"));
-        if (isset($data->id) && isset($data->nome) && isset($data->matricula)) {
+    
+        
+        if (isset($data->id) && isset($data->nome) && isset($data->matricula) && isset($data->data_nasc) && isset($data->primeira_nota) && isset($data->segunda_nota)) {
             try {
-                $result = $this->aluno->update($data->id, $data->nome, $data->matricula, $data->data_nasc ?? null);
+                
+                $primeira_nota = floatval($data->primeira_nota); 
+                $segunda_nota = floatval($data->segunda_nota); 
+    
+               
+                $result = $this->aluno->update($data->id, $data->nome, $data->matricula, $data->data_nasc, $primeira_nota, $segunda_nota);
+    
                 if ($result) {
                     http_response_code(200);
                     echo json_encode(["message" => "Aluno atualizado com sucesso."]);
@@ -53,6 +60,7 @@ class AlunoController
             echo json_encode(["message" => "Dados incompletos."]);
         }
     }
+    
 
     public function delete()
     {
@@ -100,26 +108,4 @@ class AlunoController
         }
     }
 
-    public function updateNotas()
-    {
-        $data = json_decode(file_get_contents("php://input"));
-        if (isset($data->id) &&isset($data->matricula)&& isset($data->primeira_nota) && isset($data->segunda_nota)) {
-            try {
-                $result = $this->aluno->updateNotas($data->id, $data->matricula, $data->primeira_nota ?? null, $data->segunda_nota ?? null);
-                if ($result) {
-                    http_response_code(200);
-                    echo json_encode(["message" => "Notas atualizadas com sucesso."]);
-                } else {
-                    http_response_code(500);
-                    echo json_encode(["message" => "Erro ao atualizar notas."]);
-                }
-            } catch (\Throwable $th) {
-                http_response_code(500);
-                echo json_encode(["message" => "Erro ao atualizar o notas."]);
-            }
-        } else {
-            http_response_code(400);
-            echo json_encode(["message" => "Preencha todos os campos."]);
-        }
-    }
 }
