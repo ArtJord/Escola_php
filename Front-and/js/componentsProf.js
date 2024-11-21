@@ -19,12 +19,10 @@ async function fetchAlunos() {
       data.forEach(aluno => {
           const novaLinha = document.createElement('tr');
           novaLinha.id = `aluno-${aluno.id}`;
-          
-          
+
           const primeiraNota = aluno.primeira_nota || 0.0;
           const segundaNota = aluno.segunda_nota || 0.0;
 
-          
           const mediaFinal = calcularMedia(primeiraNota, segundaNota);
 
           novaLinha.innerHTML = `
@@ -40,23 +38,22 @@ async function fetchAlunos() {
               <td>
                   <button class="btn btn-success btn-sm edit-btn">Editar</button>
                   <button class="btn btn-primary btn-sm save-btn" style="display:none;">Salvar</button>
-                  <form action="#" method="POST" class="d-inline">
-                      <button type="submit" name="delete_aluno" value="${aluno.id}" class="btn btn-danger btn-sm">Excluir</button>
-                  </form>
+                  <button class="btn btn-danger btn-sm delete-btn">Excluir</button>
               </td>
           `;
           tabelaBody.appendChild(novaLinha);
 
-          
+        
           novaLinha.querySelector('.edit-btn').addEventListener('click', () => handleEdit(aluno.id));
           novaLinha.querySelector('.save-btn').addEventListener('click', () => handleSave(aluno.id));
+
+          
+          novaLinha.querySelector('.delete-btn').addEventListener('click', () => handleDelete(aluno.id));
       });
   } catch (error) {
       console.error('Erro ao buscar alunos:', error);
   }
 }
-
-
 
 function calcularMedia(primeira_nota, segunda_nota) {
   if (primeira_nota && segunda_nota) {
@@ -68,19 +65,18 @@ function calcularMedia(primeira_nota, segunda_nota) {
 function handleEdit(alunoId) {
   const row = document.getElementById(`aluno-${alunoId}`);
   const cells = row.querySelectorAll('.editable');
-
+  
   
   cells.forEach(cell => {
       const field = cell.dataset.field;
       const currentValue = cell.textContent;
-
       
       if (field === 'primeira_nota' || field === 'segunda_nota') {
-          cell.innerHTML = `<input type="number" value="${currentValue}" data-field="${field}" class="form-control" step="0.1" min="0" max="10">`;
-      } else {
-          
-          cell.innerHTML = `<input type="text" value="${currentValue}" data-field="${field}" class="form-control">`;
-      }
+        
+        cell.innerHTML = `<input type="text" value="${currentValue}" data-field="${field}" class="form-control">`;
+    } else {
+        cell.innerHTML = `<input type="text" value="${currentValue}" data-field="${field}" class="form-control">`;
+    }
   });
 
   
@@ -88,22 +84,32 @@ function handleEdit(alunoId) {
   row.querySelector('.save-btn').style.display = 'inline-block';
 }
 
+
 async function handleSave(alunoId) {
   const row = document.getElementById(`aluno-${alunoId}`);
   const inputs = row.querySelectorAll('input');
 
-  
   const updatedData = {};
-  
+
   
   inputs.forEach(input => {
       updatedData[input.dataset.field] = input.value;
   });
 
   
-  updatedData.id = alunoId;
+  updatedData.primeira_nota = parseFloat(updatedData.primeira_nota);
+  updatedData.segunda_nota = parseFloat(updatedData.segunda_nota);
 
   
+  if (isNaN(updatedData.primeira_nota) || isNaN(updatedData.segunda_nota)) {
+    alert("Por favor, insira valores válidos para as notas.");
+    return;
+  }
+
+  updatedData.id = alunoId;
+
+  console.log('Dados a serem enviados:', updatedData);
+
   const apiUrl = `http://localhost:8000/aluno/atualizar/${alunoId}`; 
   try {
       const response = await fetch(apiUrl, {
@@ -121,16 +127,15 @@ async function handleSave(alunoId) {
               cell.textContent = input.value; 
           });
 
-         
-          const primeiraNota = parseFloat(updatedData.primeira_nota);
-          const segundaNota = parseFloat(updatedData.segunda_nota);
+          
+          const primeiraNota = updatedData.primeira_nota;
+          const segundaNota = updatedData.segunda_nota;
           const mediaFinal = calcularMedia(primeiraNota, segundaNota);
-          
-          
+
           const mediaCell = row.querySelector(`#media-${alunoId}`);
           mediaCell.textContent = mediaFinal.toFixed(1);
 
-          
+         
           row.querySelector('.edit-btn').style.display = 'inline-block';
           row.querySelector('.save-btn').style.display = 'none';
       } else {
@@ -143,13 +148,102 @@ async function handleSave(alunoId) {
 
 
 
-
 function preencherTela() {
     preencherProfessor();
     fetchAlunos();
 }
 
 preencherTela();
+
+async function handleDeleteProfessor() {
+  const excluirContaBtn = document.getElementById("excluirContaBtn");  // Botão para excluir conta
+  const confirmDeleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));  // Modal de confirmação
+  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');  // Botão para confirmar a exclusão
+
+  // Ação ao clicar no botão "Excluir Conta"
+  excluirContaBtn.addEventListener('click', function() {
+      confirmDeleteModal.show();  // Exibe o modal de confirmação
+  });
+
+  // Confirmar exclusão quando o usuário clicar em "Excluir" no modal
+  confirmDeleteBtn.addEventListener('click', async function() {
+      const professorId = sessionStorage.getItem("id");  // Obtém o ID do professor do sessionStorage
+      const apiUrl = `http://localhost:8000/deletar`;  // URL da API para deletar o professor
+
+      try {
+          const response = await fetch(apiUrl, {
+              method: 'DELETE',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ id: professorId })  // Envia o ID do professor para exclusão
+          });
+
+          if (response.ok) {
+              alert("Sua conta foi excluída com sucesso!");  // Mensagem de sucesso
+
+              // Remove o professor do sessionStorage para garantir que ele não tenha mais acesso
+              sessionStorage.removeItem("id"); 
+
+              // Redireciona o usuário para a página de login
+              window.location.href = "http://127.0.0.1:5500/Front-and/views/TelaLogin.html";  // Substitua "/login" pelo caminho correto para a tela de login
+          } else {
+              console.error('Falha ao excluir conta');
+              alert("Falha ao excluir sua conta.");
+          }
+      } catch (error) {
+          console.error('Erro ao excluir conta:', error);
+          alert("Erro ao excluir sua conta.");
+      }
+
+      confirmDeleteModal.hide();  // Fecha o modal de confirmação após a exclusão ou falha
+  });
+}
+
+// Chama a função para associar os eventos aos botões
+handleDeleteProfessor();
+
+
+
+
+
+async function handleDelete(alunoId) {
+  
+  const deleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+  deleteModal.show();
+
+  
+  document.getElementById('confirmDeleteBtn').onclick = async () => {
+    
+    const apiUrl = `http://localhost:8000/aluno/deletar`;  
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: alunoId })  
+        });
+
+        if (response.ok) {
+            
+            const row = document.getElementById(`aluno-${alunoId}`);
+            row.remove();
+            alert("Aluno excluído com sucesso!");
+        } else {
+            console.error('Falha ao excluir aluno');
+            alert("Falha ao excluir aluno.");
+        }
+    } catch (error) {
+        console.error('Erro ao excluir aluno:', error);
+        alert("Erro ao excluir aluno.");
+    }
+
+    
+    deleteModal.hide();
+  };
+}
 
 async function fetchProfessor() {
 

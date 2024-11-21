@@ -38,12 +38,27 @@ class AlunoController
         if (isset($data->id) && isset($data->nome) && isset($data->matricula) && isset($data->data_nasc) && isset($data->primeira_nota) && isset($data->segunda_nota)) {
             try {
                 
-                $primeira_nota = floatval($data->primeira_nota); 
-                $segunda_nota = floatval($data->segunda_nota); 
+                $primeira_nota = filter_var($data->primeira_nota, FILTER_VALIDATE_FLOAT);
+                $segunda_nota = filter_var($data->segunda_nota, FILTER_VALIDATE_FLOAT);
     
-               
+                
+                if ($primeira_nota === false || $segunda_nota === false) {
+                    http_response_code(400);
+                    echo json_encode(["message" => "Notas inválidas."]);
+                    return;
+                }
+    
+                
+                if ($primeira_nota < 0 || $primeira_nota > 10 || $segunda_nota < 0 || $segunda_nota > 10) {
+                    http_response_code(400);
+                    echo json_encode(["message" => "Notas devem estar entre 0 e 10."]);
+                    return;
+                }
+    
+                
                 $result = $this->aluno->update($data->id, $data->nome, $data->matricula, $data->data_nasc, $primeira_nota, $segunda_nota);
     
+                
                 if ($result) {
                     http_response_code(200);
                     echo json_encode(["message" => "Aluno atualizado com sucesso."]);
@@ -52,6 +67,7 @@ class AlunoController
                     echo json_encode(["message" => "Erro ao atualizar Aluno."]);
                 }
             } catch (\Throwable $th) {
+                
                 http_response_code(500);
                 echo json_encode(["message" => "Erro ao atualizar o Aluno."]);
             }
@@ -61,29 +77,39 @@ class AlunoController
         }
     }
     
+    
 
     public function delete()
     {
+        if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
+            http_response_code(405);
+            echo json_encode(["message" => "Método não permitido."]);
+            return;
+        }
+    
         $data = json_decode(file_get_contents("php://input"));
+    
         if (isset($data->id)) {
             try {
                 $result = $this->aluno->delete($data->id);
+    
                 if ($result) {
                     http_response_code(200);
                     echo json_encode(["message" => "Aluno deletado com sucesso."]);
                 } else {
                     http_response_code(500);
-                    echo json_encode(["message" => "Erro ao deletar Aluno."]);
+                    echo json_encode(["message" => "Erro ao deletar aluno."]);
                 }
             } catch (\Throwable $th) {
                 http_response_code(500);
-                echo json_encode(["message" => "Erro ao deletar Aluno."]);
+                echo json_encode(["message" => "Erro ao deletar aluno. Detalhes: " . $th->getMessage()]);
             }
         } else {
             http_response_code(400);
-            echo json_encode(["message" => "Dados incompletos."]);
+            echo json_encode(["message" => "Dados incompletos. ID do aluno é obrigatório."]);
         }
     }
+    
 
     public function getAllByUserId()
     {

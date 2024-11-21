@@ -3,7 +3,7 @@
         'name' => 'clara/escola_php',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '05c6005cbf8474c8137e7a8625c8483bcfc7c434',
+        'reference' => '0e00741353c95cbf37dd183e451f08844021746a',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'clara/escola_php' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '05c6005cbf8474c8137e7a8625c8483bcfc7c434',
+            'reference' => '0e00741353c95cbf37dd183e451f08844021746a',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
