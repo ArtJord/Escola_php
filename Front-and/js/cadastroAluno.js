@@ -21,7 +21,7 @@ form.addEventListener('submit', (event) => {
     
     };
 
-    fetch('http://localhost:8000/registro', {
+    fetch('http://localhost:8000/aluno/registrar', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

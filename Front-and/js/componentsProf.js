@@ -31,10 +31,10 @@ async function fetchAlunos() {
               <td class="editable" data-field="data_nasc">${aluno.data_nasc}</td>
               <td class="editable" data-field="matricula">${aluno.matricula}</td>
               <!-- Editáveis: Notas -->
-              <td class="editable" data-field="primeira_nota">${primeiraNota.toFixed(1)}</td>
-              <td class="editable" data-field="segunda_nota">${segundaNota.toFixed(1)}</td>
+              <td class="editable" data-field="primeira_nota">${primeiraNota}</td>
+              <td class="editable" data-field="segunda_nota">${segundaNota}</td>
               <!-- Média Final -->
-              <td id="media-${aluno.id}">${mediaFinal.toFixed(1)}</td>
+              <td id="media-${aluno.id}">${mediaFinal}</td>
               <td>
                   <button class="btn btn-success btn-sm edit-btn">Editar</button>
                   <button class="btn btn-primary btn-sm save-btn" style="display:none;">Salvar</button>
@@ -90,25 +90,20 @@ async function handleSave(alunoId) {
   const inputs = row.querySelectorAll('input');
 
   const updatedData = {};
-
   
   inputs.forEach(input => {
       updatedData[input.dataset.field] = input.value;
   });
 
-  
   updatedData.primeira_nota = parseFloat(updatedData.primeira_nota);
   updatedData.segunda_nota = parseFloat(updatedData.segunda_nota);
 
-  
   if (isNaN(updatedData.primeira_nota) || isNaN(updatedData.segunda_nota)) {
     alert("Por favor, insira valores válidos para as notas.");
     return;
   }
 
   updatedData.id = alunoId;
-
-  console.log('Dados a serem enviados:', updatedData);
 
   const apiUrl = `http://localhost:8000/aluno/atualizar/${alunoId}`; 
   try {
@@ -126,7 +121,6 @@ async function handleSave(alunoId) {
               const cell = input.closest('td');
               cell.textContent = input.value; 
           });
-
           
           const primeiraNota = updatedData.primeira_nota;
           const segundaNota = updatedData.segunda_nota;
@@ -135,7 +129,6 @@ async function handleSave(alunoId) {
           const mediaCell = row.querySelector(`#media-${alunoId}`);
           mediaCell.textContent = mediaFinal.toFixed(1);
 
-         
           row.querySelector('.edit-btn').style.display = 'inline-block';
           row.querySelector('.save-btn').style.display = 'none';
       } else {
@@ -146,8 +139,6 @@ async function handleSave(alunoId) {
   }
 }
 
-
-
 function preencherTela() {
     preencherProfessor();
     fetchAlunos();
@@ -156,65 +147,51 @@ function preencherTela() {
 preencherTela();
 
 async function handleDeleteProfessor() {
-  const excluirContaBtn = document.getElementById("excluirContaBtn");  // Botão para excluir conta
-  const confirmDeleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));  // Modal de confirmação
-  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');  // Botão para confirmar a exclusão
+  
+  const excluirContaBtn = document.getElementById("excluirContaBtn");
+  const confirmDeleteProfessorModal = new bootstrap.Modal(document.getElementById('confirmDeleteProfessorModal')); 
+  const confirmDeleteProfessorBtn = document.getElementById('confirmDeleteProfessorBtn');  // 
 
-  // Ação ao clicar no botão "Excluir Conta"
   excluirContaBtn.addEventListener('click', function() {
-      confirmDeleteModal.show();  // Exibe o modal de confirmação
+      confirmDeleteProfessorModal.show();  
   });
 
-  // Confirmar exclusão quando o usuário clicar em "Excluir" no modal
-  confirmDeleteBtn.addEventListener('click', async function() {
-      const professorId = sessionStorage.getItem("id");  // Obtém o ID do professor do sessionStorage
-      const apiUrl = `http://localhost:8000/deletar`;  // URL da API para deletar o professor
-
+  confirmDeleteProfessorBtn.addEventListener('click', async function() {
+      const professorId = sessionStorage.getItem("id");  
+      const apiUrl = `http://localhost:8000/deletar`;  
       try {
           const response = await fetch(apiUrl, {
               method: 'DELETE',
               headers: {
                   'Content-Type': 'application/json'
               },
-              body: JSON.stringify({ id: professorId })  // Envia o ID do professor para exclusão
+              body: JSON.stringify({ id: professorId })
           });
 
           if (response.ok) {
-              alert("Sua conta foi excluída com sucesso!");  // Mensagem de sucesso
-
-              // Remove o professor do sessionStorage para garantir que ele não tenha mais acesso
-              sessionStorage.removeItem("id"); 
-
-              // Redireciona o usuário para a página de login
-              window.location.href = "http://127.0.0.1:5500/Front-and/views/TelaLogin.html";  // Substitua "/login" pelo caminho correto para a tela de login
+              alert("Sua conta foi excluída com sucesso!");
+              sessionStorage.removeItem("id");  
+              window.location.href = "http://127.0.0.1:5500/Front-and/views/TelaLogin.html";
           } else {
-              console.error('Falha ao excluir conta');
               alert("Falha ao excluir sua conta.");
           }
       } catch (error) {
-          console.error('Erro ao excluir conta:', error);
           alert("Erro ao excluir sua conta.");
       }
 
-      confirmDeleteModal.hide();  // Fecha o modal de confirmação após a exclusão ou falha
+      confirmDeleteProfessorModal.hide();  
   });
 }
 
-// Chama a função para associar os eventos aos botões
 handleDeleteProfessor();
 
-
-
-
-
 async function handleDelete(alunoId) {
-  
-  const deleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
-  deleteModal.show();
+  const deleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteAlunoModal')); 
+  const confirmDeleteAlunoBtn = document.getElementById('confirmDeleteAlunoBtn'); 
 
-  
-  document.getElementById('confirmDeleteBtn').onclick = async () => {
-    
+  deleteModal.show(); 
+
+  confirmDeleteAlunoBtn.onclick = async () => {
     const apiUrl = `http://localhost:8000/aluno/deletar`;  
 
     try {
@@ -223,26 +200,22 @@ async function handleDelete(alunoId) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ id: alunoId })  
+            body: JSON.stringify({ id: alunoId }) 
         });
 
         if (response.ok) {
-            
             const row = document.getElementById(`aluno-${alunoId}`);
             row.remove();
             alert("Aluno excluído com sucesso!");
         } else {
-            console.error('Falha ao excluir aluno');
             alert("Falha ao excluir aluno.");
         }
     } catch (error) {
-        console.error('Erro ao excluir aluno:', error);
         alert("Erro ao excluir aluno.");
     }
 
-    
-    deleteModal.hide();
-  };
+    deleteModal.hide(); 
+}
 }
 
 async function fetchProfessor() {
@@ -357,15 +330,3 @@ async function preencherProfessor() {
     }
 
 });
-
-
-   
-
-   
-    
-
-  
-
-
-
-
